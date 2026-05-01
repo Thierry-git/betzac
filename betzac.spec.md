@@ -423,7 +423,7 @@ In the following Backus-Naur form grammatical description, we retain the `BASIC 
 
 <atom-expr> ::= "(" <betza-expr> ")" | <label>
 
-<chain-operator> ::= "-" "-" | "-"
+<chain-operator> ::= "--" | "-"
 
 <modifiers> ::= <modifier> <modifiers> | <modifier>
 
@@ -437,7 +437,7 @@ In the following Backus-Naur form grammatical description, we retain the `BASIC 
 
 <behaviour> ::= "c" | "g" | "i" | "j" | "m" | "n" | "p" | "y"
 
-<exponent> ::= "0" "*" | <number> | <modified-chain-exponent> <number>
+<exponent> ::= "0*" | <number> | <modified-chain-exponent> <number>
 
 <modified-chain-exponent> ::= <chain-operator> <modifiers> | <modifiers>
 ```
@@ -476,6 +476,33 @@ TODO
 
 TODO
 
+# 7 Annexes
+
+## Annex A - Compiler Grammar
+
+We present a grammar for betzac semantics (without comments) in Backus-Naur form. We build upon the betza expressions grammar defined in [Section 3.2](#32-grammar).
+
+```bnf
+<source> ::= <line> | <source>
+
+<line> ::= <directive> | <betza-stmt>
+
+<directive> ::= <export-directive> | <using-directive> | <override-directive>
+
+<export-directive> ::= "export" <betza-stmt>
+
+; where <path> is any well-formed path ;
+<using-directive> ::= "using" <path>
+
+<override-directive> ::= "override" <override-arg>
+
+<override-arg> ::= <betza-stmt> | <export-directive> | <using-directive>
+
+<betza-stmt> ::=
+      <label> "=" <betza-expr> ";"
+    | <label> "=" <label> ";"
+    | <label> ";"
+    | <betza-expr> ";"
 ```
 
-```
+In practice, we will not reject an empty source file, but simply produce an empty output. Also, we would ignore comments either as a preprocessing step or by modifying the above grammar.
