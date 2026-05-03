@@ -343,7 +343,7 @@ This flag has specifier `all`.
 
 2.7.1 - Comments can be inserted anywhere in a betza file. Text in a comment will be called commented text. Any commented text will be ignored by `betzac`.
 
-2.7.2 Any occurrence of the `#` character will begin a comment. All text between and including the `#` character and the closest newline will be commented text.
+2.7.2 Any occurrence of the `#` character will begin a comment. All text between and including the `#` character and the closest newline (or EOF) will be commented text.
 
 2.7.3 Text which is not in a comment will follow the regular rules of interpretation by `betzac`.
 
@@ -398,13 +398,7 @@ We present the grammar of the betza language in Backus-Naur form.
 <descriptor> ::= <sentence> | <leap>
 
 <leap> ::= <number> "," <number>
-```
 
-In expressions, whitespace is ignored wherever it occurs — that is, outside of labels. For ease of reading, we will not define an optional whitespace symbol and clutter the following grammar description with them. It should be implicitly understood that optional whitespace can occur between any non-label terminal character of an expression.
-
-In the following Backus-Naur form grammatical description, we retain the `BASIC COLLECTIONS` and `LABELS` definitions.
-
-```bnf
 ; EXPRESSIONS ;
 
 <betza-expr> ::= <chain-expr>
@@ -446,11 +440,9 @@ In the following Backus-Naur form grammatical description, we retain the `BASIC 
 
 ## 3.3 Lexical Notes
 
-TODO
+In expressions, `<whitespace>` is ignored wherever it occurs — that is, outside of labels where `" "` has a special role to play. We have omitted this in [Section 3.2](#32-grammar) for ease of reading. It should be implicitly understood that optional whitespace can occur between any non-label terminal character of an expression.
 
 ## 3.4 Semantic Rules
-
-TODO
 
 ---
 
@@ -483,7 +475,7 @@ TODO
 We present a grammar for betzac semantics (without comments) in Backus-Naur form. We build upon the betza expressions grammar defined in [Section 3.2](#32-grammar).
 
 ```bnf
-<source> ::= <line> | <source>
+<source> ::= <line> <source> | ""
 
 <line> ::= <directive> | <betza-stmt>
 
@@ -498,11 +490,9 @@ We present a grammar for betzac semantics (without comments) in Backus-Naur form
 
 <override-arg> ::= <betza-stmt> | <export-directive> | <using-directive>
 
-<betza-stmt> ::=
-      <label> "=" <betza-expr> ";"
-    | <label> "=" <label> ";"
-    | <label> ";"
-    | <betza-expr> ";"
+<betza-stmt> ::= <label> "=" <betza-expr> ";" | <betza-expr> ";"
 ```
 
-In practice, we will not reject an empty source file, but simply produce an empty output. Also, we would ignore comments either as a preprocessing step or by modifying the above grammar.
+We will ignore comments (which start with `"#"` and and with `"\n"` or `"EOF"`) either as a preprocessing step or by modifying the above grammar.
+
+Note that all statement types described in [Section 2.3](#23-statements) can be realized as `<betza-stmt>` where `<betza-expr>` may reduce to `<label>`.
