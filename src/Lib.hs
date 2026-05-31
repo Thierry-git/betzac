@@ -1,6 +1,7 @@
-module Lib (
-    someFunc,
-) where
+module Lib
+  ( run,
+  )
+where
 
-someFunc :: IO ()
-someFunc = putStrLn "someFunc"
+run :: IO ()
+run = putStrLn "All good."

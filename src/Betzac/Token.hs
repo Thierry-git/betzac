@@ -1,9 +1,10 @@
-module Token (Token) where
+module Betzac.Token (Token) where
 
-import AST (Behaviour, Direction)
+import Betzac.AST (Behaviour, Direction)
 
 data Token
   = TokAtom Char
+  | TokDescriptor String
   | TokDirection Direction
   | TokBehaviour Behaviour
   | TokLParen

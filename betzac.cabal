@@ -25,7 +25,10 @@ source-repository head
 
 library
   exposed-modules:
-      AST
+      Betzac.AST
+      Betzac.Lexer.Core
+      Betzac.Lexer.Scan
+      Betzac.Token
       Lib
   other-modules:
       Paths_betzac
@@ -52,6 +55,7 @@ test-suite betzac-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      Betzac.Lexer.CoreSpec
       Paths_betzac
   hs-source-dirs:
       test
@@ -59,4 +63,5 @@ test-suite betzac-test
   build-depends:
       base >=4.7 && <5
     , betzac
+    , hspec
   default-language: Haskell2010
