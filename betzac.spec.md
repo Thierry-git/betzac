@@ -381,6 +381,10 @@ We present the grammar of the betza language in Backus-Naur form.
 
 <digit> ::= "0" | <nonzero-digit>
 
+<digits> ::= <digit> <digits> | <digit>
+
+<number> ::= <nonzero-digit> <digits> | <digit>
+
 <alphanumeric> ::= <letter> | <digit>
 
 <word> ::= <alphanumeric> <word> | <alphanumeric>
@@ -442,7 +446,19 @@ We present the grammar of the betza language in Backus-Naur form.
 
 In expressions, `<whitespace>` is ignored wherever it occurs — that is, outside of labels where `" "` has a special role to play. We have omitted this in [Section 3.2](#32-grammar) for ease of reading. It should be implicitly understood that optional whitespace can occur between any non-label terminal character of an expression.
 
+---
+
+The rule
+
+```bnf
+<chain-operator> ::= "--" | "-"
+```
+
+has the right order only **for a greedy parser**.
+
 ## 3.4 Semantic Rules
+
+**Modifier inheritance and chaining**
 
 ---
 
