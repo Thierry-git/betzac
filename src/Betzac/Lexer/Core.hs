@@ -2,6 +2,7 @@
 
 module Betzac.Lexer.Core where
 
+import Control.Applicative
 import Data.Maybe (listToMaybe)
 
 newtype Lexer a = Lexer {runLexer :: String -> Either LexError (a, String)}
@@ -20,6 +21,12 @@ instance Monad Lexer where
     (a, s') <- runLexer l $ s
     runLexer (f a) s'
 
+instance Alternative Lexer where
+  empty = Lexer $ const $ Left LexError
+  l <|> r = Lexer $ \s -> case runLexer l s of
+    Left _ -> runLexer r s
+    Right a -> Right a
+
 liftMaybe :: LexError -> Maybe a -> Lexer a
 liftMaybe err = maybe (Lexer $ const $ Left err) pure
 
@@ -33,10 +40,9 @@ advance = Lexer go
     go (c : cs) = Right (c, cs)
 
 satisfy :: (Char -> Bool) -> Lexer Char
-satisfy p = Lexer sat
-  where
-    sat [] = Left LexError
-    sat (c : cs) = if p c then Right (c, cs) else Left LexError
+satisfy p = do
+  c <- advance
+  if p c then return c else empty
 
 char :: Char -> Lexer Char
 char c = satisfy (== c)
