@@ -39,10 +39,10 @@ advance = Lexer go
     go [] = Left LexError
     go (c : cs) = Right (c, cs)
 
-satisfy :: (Char -> Bool) -> Lexer Char
-satisfy p = do
+sat :: (Char -> Bool) -> Lexer Char
+sat p = do
   c <- advance
   if p c then return c else empty
 
 char :: Char -> Lexer Char
-char c = satisfy (== c)
+char c = sat (== c)
