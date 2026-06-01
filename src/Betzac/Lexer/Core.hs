@@ -7,6 +7,7 @@ module Betzac.Lexer.Core (
     advance,
     sat,
     char,
+    oneOf,
 ) where
 
 import Control.Applicative (Alternative (..))
@@ -59,3 +60,6 @@ sat p = do
 
 char :: Char -> Lexer Char
 char c = sat (== c)
+
+oneOf :: String -> Lexer Char
+oneOf s = sat $ (`elem` s)

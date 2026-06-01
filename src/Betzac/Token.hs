@@ -1,4 +1,4 @@
-module Betzac.Token (Token) where
+module Betzac.Token (Token (..)) where
 
 import Betzac.AST (Behaviour, Direction)
 
@@ -20,6 +20,5 @@ data Token
     | TokBang
     | TokInfinite
     | TokNumber Int
-    | TokColon
     | TokComma
     deriving (Show)
