@@ -1,6 +1,6 @@
-module Lib
-  ( run,
-  )
+module Lib (
+    run,
+)
 where
 
 run :: IO ()

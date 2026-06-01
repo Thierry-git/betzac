@@ -3,4 +3,4 @@ import Test.Hspec
 
 main :: IO ()
 main = hspec $ do
-  CoreSpec.spec
+    CoreSpec.spec

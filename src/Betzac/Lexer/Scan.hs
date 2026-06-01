@@ -1,7 +1,7 @@
-module Betzac.Lexer.Scan
-  ( lexToken,
+module Betzac.Lexer.Scan (
+    lexToken,
     lexAll,
-  )
+)
 where
 
 import Betzac.Lexer.Core
