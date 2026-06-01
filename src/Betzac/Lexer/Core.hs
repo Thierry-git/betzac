@@ -1,9 +1,16 @@
-{-# OPTIONS_GHC -Wno-missing-export-lists #-}
+module Betzac.Lexer.Core (
+    module Control.Applicative,
+    Lexer (..),
+    LexError (..),
+    liftMaybe,
+    peek,
+    advance,
+    sat,
+    char,
+) where
 
-module Betzac.Lexer.Core where
-
-import Control.Applicative
-import Data.Bifunctor
+import Control.Applicative (Alternative (..))
+import Data.Bifunctor (Bifunctor (first))
 import Data.Maybe (listToMaybe)
 
 newtype Lexer a = Lexer {runLexer :: String -> Either LexError (a, String)}

@@ -6,7 +6,6 @@ where
 
 import Betzac.Lexer.Core
 import Betzac.Token
-import Control.Applicative
 
 lexToken :: Lexer Token
 lexToken = undefined

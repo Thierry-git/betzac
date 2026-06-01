@@ -1,7 +1,16 @@
 module Betzac.Lexer.CoreSpec (spec) where
 
 import Betzac.Lexer.Core
+import Data.Char
 import Test.Hspec
+
+-- shouldSucceed :: Either LexError a -> Expectation
+-- shouldSucceed (Left e) = expectationFailure $ "expected success but got: " ++ show e
+-- shouldSucceed (Right _) = return ()
+
+shouldFail :: (Show a) => Either LexError a -> Expectation
+shouldFail (Left _) = return ()
+shouldFail (Right x) = expectationFailure $ "expected failure but got: " ++ show x
 
 spec :: Spec
 spec = do
@@ -9,7 +18,8 @@ spec = do
         it "consumes and returns the first character" $
             runLexer advance "abc" `shouldBe` Right ('a', "bc")
         it "fails on empty input" $
-            runLexer advance "" `shouldBe` Left LexError
+            shouldFail $
+                runLexer advance ""
 
         describe "peek" $ do
             it "returns the first character without consuming" $
@@ -23,12 +33,52 @@ spec = do
                     runLexer (sat $ \c -> c `elem` ['A' .. 'Z']) "Haskell" `shouldBe` Right ('H', "askell")
                     runLexer (sat $ const True) "anything!" `shouldBe` Right ('a', "nything!")
             context "when the predicate is not satisfied" $
-                it "returns a LexError" $ do
-                    runLexer (sat $ \c -> c `notElem` ['A' .. 'Z']) "Haskell" `shouldBe` Left LexError
-                    runLexer (sat $ const False) "nothing..." `shouldBe` Left LexError
+                it "fails" $ do
+                    shouldFail $ runLexer (sat $ \c -> c `notElem` ['A' .. 'Z']) "Haskell"
+                    shouldFail $ runLexer (sat $ const False) "nothing..."
+            it "fails on empty input" $
+                shouldFail $
+                    runLexer (sat $ const True) ""
 
         describe "char" $ do
             it "consumes and returns the first character if the next char matches" $
                 runLexer (char 'b') "betzac" `shouldBe` Right ('b', "etzac")
-            it "returns a LexError if the next char does not match" $
-                runLexer (char '_') "betzac" `shouldBe` Left LexError
+            it "fails when the character does not match" $
+                shouldFail $
+                    runLexer (char '_') "betzac"
+
+        describe "fmap" $ do
+            it "applies a function to the result without affecting the stream" $
+                runLexer (fmap toUpper $ char 'h') "hello" `shouldBe` Right ('H', "ello")
+
+        describe "<*>" $ do
+            it "sequences two lexers and applies the function to both results" $
+                runLexer ((\a b -> [a, b]) <$> char 'h' <*> char 'e') "hello" `shouldBe` Right ("he", "llo")
+            it "fails if any lexer in the sequence fails" $
+                shouldFail $
+                    runLexer ((\a b -> [a, b]) <$> char 'h' <*> char 'x') "hello"
+
+        describe "many" $ do
+            it "consumes as many matching characters as possible" $
+                runLexer (many $ sat $ \c -> c `elem` ['a' .. 'z']) "hello123" `shouldBe` Right ("hello", "123")
+            it "returns an empty list when nothing matches" $
+                runLexer (many $ sat $ \c -> c `elem` ['a' .. 'z']) "123" `shouldBe` Right ("", "123")
+            it "returns an empty list on empty input" $
+                runLexer (many $ sat $ const False) "" `shouldBe` Right ("", "")
+
+        describe "some" $ do
+            it "consumes as many matching characters as possible" $
+                runLexer (some $ sat $ \c -> c `elem` ['a' .. 'z']) "hello123" `shouldBe` Right ("hello", "123")
+            it "fails when the next character does not match" $ do
+                shouldFail $ runLexer (some $ sat $ \c -> c `elem` ['a' .. 'z']) "123"
+                shouldFail $ runLexer (some $ sat $ \c -> c `elem` ['a' .. 'z']) "321olleh"
+            it "fails on empty input" $
+                shouldFail $
+                    runLexer (some $ sat $ \c -> c `elem` ['a' .. 'z']) ""
+
+        describe "<|>" $ do
+            it "returns the first success" $
+                runLexer (char 'x' <|> char 'h') "hello" `shouldBe` Right ('h', "ello")
+            it "fails when both alternatives fail" $
+                shouldFail $
+                    runLexer (char 'x' <|> char 'y') "hello"
