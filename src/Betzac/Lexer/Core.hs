@@ -3,6 +3,7 @@
 module Betzac.Lexer.Core where
 
 import Control.Applicative
+import Data.Bifunctor
 import Data.Maybe (listToMaybe)
 
 newtype Lexer a = Lexer {runLexer :: String -> Either LexError (a, String)}
@@ -10,7 +11,7 @@ newtype Lexer a = Lexer {runLexer :: String -> Either LexError (a, String)}
 data LexError = LexError deriving (Eq, Show)
 
 instance Functor Lexer where
-    fmap f a = pure f <*> a
+    fmap f (Lexer g) = Lexer $ \s -> fmap (first f) (g s)
 
 instance Applicative Lexer where
     pure a = Lexer $ \s -> Right (a, s)
@@ -26,6 +27,11 @@ instance Alternative Lexer where
     l <|> r = Lexer $ \s -> case runLexer l s of
         Left _ -> runLexer r s
         Right a -> Right a
+    many p = Lexer $ \s -> runLexer (some p <|> pure []) s
+    some p = do
+        x <- p
+        xs <- many p
+        return (x : xs)
 
 liftMaybe :: LexError -> Maybe a -> Lexer a
 liftMaybe err = maybe (Lexer $ const $ Left err) pure
@@ -41,8 +47,8 @@ advance = Lexer go
 
 sat :: (Char -> Bool) -> Lexer Char
 sat p = do
-    c <- advance
-    if p c then return c else empty
+    c <- peek >>= liftMaybe LexError
+    if p c then advance else empty
 
 char :: Char -> Lexer Char
 char c = sat (== c)
