@@ -8,17 +8,24 @@ where
 import Betzac.Lexer.Core
 import Betzac.Token
 
+whitespace :: String
+whitespace = " \n\t\r\f\b"
+
 lexWhitespace :: Lexer ()
-lexWhitespace = () <$ some (oneOf " \n\t\r\f\b")
+lexWhitespace = () <$ some (oneOf whitespace)
 
 lexComment :: Lexer ()
 lexComment = (() <$) (char '#' >> (many $ sat (/= '\n')))
 
 lexIgnore :: Lexer ()
-lexIgnore = () <$ some (lexWhitespace <|> lexComment)
+lexIgnore = () <$ many (lexWhitespace <|> lexComment)
 
 lexToken :: Lexer Token
-lexToken = TokComma <$ lexIgnore
+lexToken = TokDescriptor <$> some (sat $ \c -> c `notElem` whitespace)
 
 lexAll :: Lexer [Token]
-lexAll = many lexToken
+lexAll = lexIgnore >> many lexTokenIgnore
+  where
+    lexTokenIgnore = do
+        t <- lexToken
+        lexIgnore >> return t

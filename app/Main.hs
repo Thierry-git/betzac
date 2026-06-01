@@ -3,4 +3,7 @@ module Main (main) where
 import Betzac.Lexer.Scan (lexAll, runLexer)
 
 main :: IO ()
-main = putStrLn . show $ runLexer lexAll "  \n \t    #samkl mfl m a  mal mf\n\n\nSalut!"
+main = do
+    putStrLn "Om nom nom! Feed me stuff to lex (Ctrl+D to finish):"
+    s <- getContents
+    putStrLn . show $ runLexer lexAll s
