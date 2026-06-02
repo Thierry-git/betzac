@@ -1,7 +1,7 @@
 module Betzac.AST (
     BetzaExpr,
-    Direction,
-    Behaviour,
+    Direction (..),
+    Behaviour (..),
 )
 where
 

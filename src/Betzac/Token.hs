@@ -1,12 +1,10 @@
 module Betzac.Token (Token (..)) where
 
-import Betzac.AST (Behaviour, Direction)
-
 data Token
     = TokAtom Char
     | TokDescriptor String
-    | TokDirection Direction
-    | TokBehaviour Behaviour
+    | TokDirection Char
+    | TokBehaviour Char
     | TokLParen
     | TokRParen
     | TokLBracket
@@ -18,7 +16,7 @@ data Token
     | TokChainStep
     | TokChainSequence
     | TokBang
-    | TokInfinite
+    | TokSlippery
     | TokNumber Int
     | TokComma
     deriving (Show)
