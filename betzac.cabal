@@ -25,9 +25,12 @@ source-repository head
 
 library
   exposed-modules:
+      Betzac.Alphabet.Comp
+      Betzac.Alphabet.Expr
+      Betzac.Alphabet.Stmt
       Betzac.AST
       Betzac.Lexer.Core
-      Betzac.Lexer.Scan
+      Betzac.Lexer.Expr
       Betzac.Token
       Lib
   other-modules:

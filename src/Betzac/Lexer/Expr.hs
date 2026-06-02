@@ -1,15 +1,13 @@
-module Betzac.Lexer.Scan (
+module Betzac.Lexer.Expr (
     lexToken,
-    lexAll,
+    lexExpr,
     runLexer,
 )
 where
 
+import Betzac.Alphabet.Expr (whitespace)
 import Betzac.Lexer.Core
 import Betzac.Token
-
-whitespace :: String
-whitespace = " \n\t\r\f\b"
 
 lexWhitespace :: Lexer ()
 lexWhitespace = () <$ some (oneOf whitespace)
@@ -23,8 +21,8 @@ lexIgnore = () <$ many (lexWhitespace <|> lexComment)
 lexToken :: Lexer Token
 lexToken = TokDescriptor <$> some (sat $ \c -> c `notElem` whitespace)
 
-lexAll :: Lexer [Token]
-lexAll = lexIgnore >> many lexTokenIgnore
+lexExpr :: Lexer [Token]
+lexExpr = lexIgnore >> many lexTokenIgnore
   where
     lexTokenIgnore = do
         t <- lexToken
