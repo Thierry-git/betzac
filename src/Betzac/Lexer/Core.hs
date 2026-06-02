@@ -6,8 +6,10 @@ module Betzac.Lexer.Core (
     peek,
     advance,
     sat,
+    failOn,
     char,
     oneOf,
+    noneOf,
 ) where
 
 import Control.Applicative (Alternative (..))
@@ -58,8 +60,18 @@ sat p = do
     c <- peek >>= liftMaybe LexError
     if p c then advance else empty
 
+failOn :: (Char -> Bool) -> Lexer ()
+failOn p = do
+    mc <- peek
+    case mc of
+        Just c | p c -> empty
+        _ -> return ()
+
 char :: Char -> Lexer Char
 char c = sat (== c)
 
 oneOf :: String -> Lexer Char
 oneOf s = sat $ (`elem` s)
+
+noneOf :: String -> Lexer Char
+noneOf s = sat (`notElem` s)

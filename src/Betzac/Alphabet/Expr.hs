@@ -38,4 +38,4 @@ symbol :: String
 symbol = "(,)<>-[]{}*:+?!"
 
 exprAlphabet :: String
-exprAlphabet = whitespace ++ alphanum ++ symbol
+exprAlphabet = alphanum ++ symbol

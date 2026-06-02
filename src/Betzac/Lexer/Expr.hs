@@ -6,15 +6,15 @@ module Betzac.Lexer.Expr (
 )
 where
 
-import Betzac.Alphabet.Expr (whitespace)
+import Betzac.Alphabet.Expr (exprAlphabet, whitespace)
 import Betzac.Lexer.Core
 import Betzac.Token
 
 lexWhitespace :: Lexer ()
-lexWhitespace = () <$ some (oneOf whitespace)
-
-lexToken :: Lexer Token
-lexToken = TokDescriptor <$> some (sat $ \c -> c `notElem` whitespace)
+lexWhitespace = () <$ many (oneOf whitespace)
 
 lexExpr :: Lexer [Token]
-lexExpr = lexWhitespace *> many (lexToken <* lexWhitespace)
+lexExpr = failOn (`elem` whitespace) >> many (lexToken <* lexWhitespace)
+
+lexToken :: Lexer Token
+lexToken = TokDescriptor <$> some (oneOf exprAlphabet)
