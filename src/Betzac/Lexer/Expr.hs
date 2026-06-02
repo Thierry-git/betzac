@@ -1,4 +1,5 @@
 module Betzac.Lexer.Expr (
+    lexWhitespace,
     lexToken,
     lexExpr,
     runLexer,
@@ -12,18 +13,8 @@ import Betzac.Token
 lexWhitespace :: Lexer ()
 lexWhitespace = () <$ some (oneOf whitespace)
 
-lexComment :: Lexer ()
-lexComment = (() <$) (char '#' >> (many $ sat (/= '\n')))
-
-lexIgnore :: Lexer ()
-lexIgnore = () <$ many (lexWhitespace <|> lexComment)
-
 lexToken :: Lexer Token
 lexToken = TokDescriptor <$> some (sat $ \c -> c `notElem` whitespace)
 
 lexExpr :: Lexer [Token]
-lexExpr = lexIgnore >> many lexTokenIgnore
-  where
-    lexTokenIgnore = do
-        t <- lexToken
-        lexIgnore >> return t
+lexExpr = lexWhitespace *> many (lexToken <* lexWhitespace)

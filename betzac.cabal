@@ -31,6 +31,7 @@ library
       Betzac.AST
       Betzac.Lexer.Core
       Betzac.Lexer.Expr
+      Betzac.Lexer.Scan
       Betzac.Token
       Lib
   other-modules:
