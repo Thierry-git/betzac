@@ -1,8 +1,10 @@
+{-# LANGUAGE DerivingVia #-}
+
 module Betzac.Lexer.Core (
     module Control.Applicative,
-    Lexer (..),
+    Lexer,
     LexError (..),
-    liftMaybe,
+    runLexer,
     peek,
     advance,
     sat,
@@ -13,52 +15,37 @@ module Betzac.Lexer.Core (
 ) where
 
 import Control.Applicative (Alternative (..))
-import Data.Bifunctor (Bifunctor (first))
-import Data.Maybe (listToMaybe)
+import Control.Monad.Trans.Class (lift)
+import Control.Monad.Trans.State.Strict (StateT (..), get, gets, put, runStateT)
+import Data.Maybe (listToMaybe) -- for peek
 
-newtype Lexer a = Lexer {runLexer :: String -> Either LexError (a, String)}
+newtype Lexer a = Lexer (StateT (Int, String) (Either LexError) a)
+    deriving
+        (Functor, Applicative, Monad)
+        via StateT (Int, String) (Either LexError)
 
-data LexError = LexError deriving (Eq, Show)
+runLexer :: Lexer a -> String -> Either LexError (a, Int, String)
+runLexer (Lexer l) s = (\(a, (n, s')) -> (a, n, s')) <$> runStateT l (0, s)
 
-instance Functor Lexer where
-    fmap f (Lexer g) = Lexer $ \s -> fmap (first f) (g s)
-
-instance Applicative Lexer where
-    pure a = Lexer $ \s -> Right (a, s)
-    (<*>) l a = l >>= \f -> fmap f a
-
-instance Monad Lexer where
-    l >>= f = Lexer $ \s -> do
-        (a, s') <- runLexer l $ s
-        runLexer (f a) s'
+data LexError = LexError Int deriving (Eq, Show)
 
 instance Alternative Lexer where
-    empty = Lexer $ const $ Left LexError
-    l <|> r = Lexer $ \s -> case runLexer l s of
-        Left _ -> runLexer r s
-        Right a -> Right a
-    many p = Lexer $ \s -> runLexer (some p <|> pure []) s
-    some p = do
-        x <- p
-        xs <- many p
-        return (x : xs)
-
-liftMaybe :: LexError -> Maybe a -> Lexer a
-liftMaybe err = maybe (Lexer $ const $ Left err) pure
+    empty = Lexer $ gets fst >>= lift . Left . LexError
+    Lexer l <|> Lexer r = Lexer $ StateT $ \s -> either (const $ runStateT r s) Right (runStateT l s)
+    some p = p >>= \x -> (x :) <$> many p
 
 peek :: Lexer (Maybe Char)
-peek = Lexer $ \s -> Right (listToMaybe s, s)
-
-advance :: Lexer Char
-advance = Lexer go
-  where
-    go [] = Left LexError
-    go (c : cs) = Right (c, cs)
+peek = Lexer $ gets $ listToMaybe . snd
 
 sat :: (Char -> Bool) -> Lexer Char
 sat p = do
-    c <- peek >>= liftMaybe LexError
-    if p c then advance else empty
+    (n, s) <- Lexer get
+    case s of
+        [] -> empty
+        (c : cs) -> if p c then Lexer $ put (n + 1, cs) >> return c else empty
+
+advance :: Lexer Char
+advance = sat $ const True
 
 failOn :: (Char -> Bool) -> Lexer ()
 failOn p = do
