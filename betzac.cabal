@@ -1,14 +1,14 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.39.1.
+-- This file has been generated from package.yaml by hpack version 0.38.1.
 --
 -- see: https://github.com/sol/hpack
 
 name:           betzac
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/Thierry-git/betzac#readme>
-homepage:       https://github.com/Thierry-git/betzac#readme
-bug-reports:    https://github.com/Thierry-git/betzac/issues
+description:    Please see the README on GitHub at <https://github.com/betza-lang/betzac#readme>
+homepage:       https://github.com/betza-lang/betzac#readme
+bug-reports:    https://github.com/betza-lang/betzac/issues
 author:         Thierry Poulin
 maintainer:     thierry.poulin@icloud.com
 copyright:      2026 Thierry Poulin
@@ -21,7 +21,7 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/Thierry-git/betzac
+  location: https://github.com/betza-lang/betzac
 
 library
   exposed-modules:
@@ -49,11 +49,26 @@ executable betzac-exe
   other-modules:
       Paths_betzac
   hs-source-dirs:
-      app
+      app/betzac
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , betzac
+    , transformers
+  default-language: Haskell2010
+
+executable betzac-lsp
+  main-is: Main.hs
+  other-modules:
+      Paths_betzac
+  hs-source-dirs:
+      app/lsp
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , betzac
+    , lsp
+    , shake
     , transformers
   default-language: Haskell2010
 
