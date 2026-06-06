@@ -1,0 +1,12 @@
+cradle:
+  stack:
+    - path: "src"
+      component: "betzac:lib"
+    - path: "app/Betzac"
+      component: "betzac:exe:betzac"
+    - path: "app/Bls"
+      component: "betzac:exe:bls"
+    - path: "test/Betzac"
+      component: "betzac:test:betzac-test"
+    - path: "test/Bls"
+      component: "betzac:test:bls-test"

@@ -1,4 +1,4 @@
-module Betzac.Lexer.CoreSpec (spec) where
+module Lexer.CoreSpec (spec) where
 
 import Betzac.Lexer.Core
 import Data.Char

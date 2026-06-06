@@ -22,6 +22,10 @@ description: Please see the README on GitHub at <https://github.com/betza-lang/b
 dependencies:
   - base >= 4.7 && < 5
   - transformers
+  - text
+  - lens
+  - lsp
+  - shake
 
 ghc-options:
   - -Wall
@@ -38,31 +42,29 @@ library:
   source-dirs: src
 
 executables:
-  betzac-exe:
+  betzac:
     main: Main.hs
-    source-dirs: app/betzac
+    source-dirs: app/Betzac
     ghc-options:
       - -threaded
       - -rtsopts
       - -with-rtsopts=-N
     dependencies:
       - betzac
-  betzac-lsp:
+  bls:
     main: Main.hs
-    source-dirs: app/lsp
+    source-dirs: app/Bls
     ghc-options:
       - -threaded
       - -rtsopts
       - -with-rtsopts=-N
     dependencies:
       - betzac
-      - lsp
-      - shake
 
 tests:
   betzac-test:
     main: Spec.hs
-    source-dirs: test
+    source-dirs: test/Betzac
     ghc-options:
       - -threaded
       - -rtsopts
@@ -70,3 +72,14 @@ tests:
     dependencies:
       - hspec
       - betzac
+  bls-test:
+    main: Spec.hs
+    source-dirs: test/Bls
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - betzac
+      - hspec
+      - lsp-test

@@ -1,4 +1,4 @@
-import qualified Betzac.Lexer.CoreSpec as CoreSpec
+import qualified CoreSpec as CoreSpec
 import Test.Hspec
 
 main :: IO ()
