@@ -113,6 +113,7 @@ test-suite bls-test
   main-is: Spec.hs
   other-modules:
       CoreSpec
+      HandlersSpec
       Paths_betzac
   hs-source-dirs:
       test/Bls
