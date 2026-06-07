@@ -12,7 +12,7 @@ bug-reports:    https://github.com/betza-lang/betzac/issues
 author:         Thierry Poulin
 maintainer:     thierry.poulin@icloud.com
 copyright:      2026 Thierry Poulin
-license:        GPLv3
+license:        GPL-3
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:

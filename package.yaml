@@ -1,7 +1,7 @@
 name: betzac
 version: 0.1.0.0
 github: "betza-lang/betzac"
-license: GPLv3
+license: GPL-3
 author: "Thierry Poulin"
 maintainer: "thierry.poulin@icloud.com"
 copyright: "2026 Thierry Poulin"
