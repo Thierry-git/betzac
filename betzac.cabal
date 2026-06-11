@@ -49,7 +49,6 @@ library
       base >=4.7 && <5
     , lens
     , lsp
-    , shake
     , text
     , transformers
   default-language: Haskell2010
@@ -66,7 +65,6 @@ executable betzac
     , betzac
     , lens
     , lsp
-    , shake
     , text
     , transformers
   default-language: Haskell2010
@@ -83,7 +81,6 @@ executable bls
     , betzac
     , lens
     , lsp
-    , shake
     , text
     , transformers
   default-language: Haskell2010
@@ -92,18 +89,19 @@ test-suite betzac-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      Lexer.ExprQC
       Lexer.CoreSpec
       Paths_betzac
   hs-source-dirs:
       test/Betzac
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      QuickCheck
+    , base >=4.7 && <5
     , betzac
     , hspec
     , lens
     , lsp
-    , shake
     , text
     , transformers
   default-language: Haskell2010
@@ -125,7 +123,6 @@ test-suite bls-test
     , lens
     , lsp
     , lsp-test
-    , shake
     , text
     , transformers
   default-language: Haskell2010

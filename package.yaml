@@ -25,7 +25,6 @@ dependencies:
   - text
   - lens
   - lsp
-  - shake
 
 ghc-options:
   - -Wall
@@ -71,6 +70,7 @@ tests:
       - -with-rtsopts=-N
     dependencies:
       - hspec
+      - QuickCheck
       - betzac
   bls-test:
     main: Spec.hs
