@@ -89,8 +89,8 @@ test-suite betzac-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Lexer.ExprQC
       Lexer.CoreSpec
+      Lexer.ExprQC
       Paths_betzac
   hs-source-dirs:
       test/Betzac

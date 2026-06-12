@@ -8,6 +8,8 @@ module Betzac.Alphabet.Expr (
     alphanum,
     symbol,
     exprAlphabet,
+    direction,
+    behaviour,
 )
 where
 
@@ -27,6 +29,12 @@ alpha = upper ++ ['a' .. 'z']
 
 nonzeroDigit :: String
 nonzeroDigit = ['1' .. '9']
+
+direction :: String
+direction = "fblrsva"
+
+behaviour :: String
+behaviour = "cgijmnpy"
 
 digit :: String
 digit = '0' : nonzeroDigit

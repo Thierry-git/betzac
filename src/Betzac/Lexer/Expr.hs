@@ -6,7 +6,7 @@ module Betzac.Lexer.Expr (
 )
 where
 
-import Betzac.Alphabet.Expr (alphanum, digit, nonzeroDigit, space, upper, whitespace)
+import Betzac.Alphabet.Expr (alphanum, behaviour, digit, direction, nonzeroDigit, space, upper, whitespace)
 import Betzac.Lexer.Core
 import Betzac.Token
 
@@ -40,10 +40,10 @@ lexDescriptor = TokDescriptor <$> (char ':' *> descriptor <* char ':')
     descriptor = some (oneOf $ space : alphanum)
 
 lexDirection :: Lexer Token
-lexDirection = TokDirection <$> oneOf "fblrsva"
+lexDirection = TokDirection <$> oneOf direction
 
 lexBehaviour :: Lexer Token
-lexBehaviour = TokBehaviour <$> oneOf "cgijmnpy"
+lexBehaviour = TokBehaviour <$> oneOf behaviour
 
 lexParen :: Lexer Token
 lexParen = lparen <|> rparen
